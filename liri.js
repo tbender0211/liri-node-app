@@ -16,27 +16,63 @@ var spotify = new Spotify(keys.spotifyKeys);
 
 
 
-console.log(client);
+// console.log(client);
+console.log(spotify);
 
 function displayTweets() {
+
     var output = "";
     var params = {screen_name:"TaraBender", count: 10 }
+
     client.get('statuses/user_timeline', params, function(error, tweets, response) {
+
       if (error) throw error;
+
       for (var i = 0; i < tweets.length; i++) {
+
         output += ("───────────────────────────────────────────\n");
         output += ("@TaraBender: " + tweets[i].text) + "\n";
         output += (tweets[i].created_at) + "\n";
+
       }
+
       output += "───────────────────────────────────────────\n";
+
       console.log(output);
+
     });
 }
 
 function spotifySong() {
+    
     var params = {type: "track", query: nodeArgs[3]}
+
     spotify.search(params, function(error,data){
-        console.log(data);
+    
+    console.log(data);
+    var response = data.tracks.items;
+    var artist = JSON.parse(body).response.artists.name;
+    var songName = JSON.parse(body).response.name;
+    var link = JSON.parse(body).response.album.href;
+    var album = JSON.parse(body).response.album.name;
+
+        if (error) throw error;
+
+        if (!error){
+
+            console.log("───────────────────────────────────────────\n");
+            console.log("\nArtist: " + artist);
+            console.log("───────────────────────────────────────────\n");
+            console.log("\nTitle: " + songName);
+            console.log("───────────────────────────────────────────\n");
+            console.log("\nUse this link to listen: " + link);
+            console.log("───────────────────────────────────────────\n");
+            console.log("\nAlbum Name: " + album);
+            console.log("───────────────────────────────────────────\n");
+
+        }
+        
+
     })
 }
 
