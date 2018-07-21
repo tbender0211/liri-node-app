@@ -14,6 +14,7 @@ var command = nodeArgs[2];
 var client = new Twitter(keys.twitterKeys);
 var spotify = new Spotify(keys.spotifyKeys);
 
+var searchTerms = process.argv.slice(3).join(" ");
 
 
 // console.log(client);
@@ -45,16 +46,14 @@ function displayTweets() {
 
 function spotifySong() {
     
-    var params = {type: "track", query: nodeArgs[3]}
-
-    spotify.search(params, function(error,data){
+    spotify.search({type: "track", query: searchTerms, limit: "10"}, function(error,data){
     
     console.log(data);
     var response = data.tracks.items;
-    var artist = JSON.parse(body).response.artists.name;
-    var songName = JSON.parse(body).response.name;
-    var link = JSON.parse(body).response.album.href;
-    var album = JSON.parse(body).response.album.name;
+    var artist = response.artists.name;
+    var songName = response.name;
+    var link = response.album.href;
+    var album = response.album.name;
 
         if (error) throw error;
 
@@ -77,23 +76,6 @@ function spotifySong() {
 }
 
 function movieInfo(){
-
-    var movieName = "";
-    
-    for (var i = 3; i < nodeArgs.length; i++) {
-
-        if (i > 3 && i < nodeArgs.length) {
-      
-          movieName = movieName + "+" + nodeArgs[i];
-      
-        }
-      
-        else {
-      
-          movieName += nodeArgs[i];
-      
-        }
-      }
     
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=7bc4c9f6";
 
