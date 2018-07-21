@@ -55,14 +55,12 @@ function spotifySong() {
     
     console.log(data);
 
-    var response = data.tracks.items;
+    var songResponse = data.tracks.items;
 
-    var artist = response.artists.name;
-    var songName = response.name;
-    var link = response.album.href;
-    var album = response.album.name;
-
-        if (error) throw error;
+    var artist = songResponse.artists.name;
+    var songName = songResponse.name;
+    var link = songResponse.album.href;
+    var album = songResponse.album.name;
 
         if (!error){
 
@@ -74,12 +72,22 @@ function spotifySong() {
             ].join("\n\n");
 
             fs.appendFile("random.txt", songData, function(error){
-                if (error) throw error;
+                
+                if (error){
+
+                    console.log(error);
+
+                };
+
                 console.log(songData);
+
             })
 
         }
-        
+          if (error){
+
+            console.log(error);
+        };
 
     })
 }
