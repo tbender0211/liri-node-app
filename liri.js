@@ -41,11 +41,15 @@ function displayTweets() {
 
       console.log(output);
 
+      fs.appendFile("random.txt", output, function(err){
+          if(err) throw err;
+      })
+
     });
 }
 
 function spotifySong() {
-    
+
     spotify.search({type: "track", query: searchTerms, limit: "10"}, function(error,data){
     
     console.log(data);
