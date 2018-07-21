@@ -10,6 +10,7 @@ var movieKey = "http://www.omdbapi.com/?i=tt3896198&apikey=7bc4c9f6";
 
 var nodeArgs = process.argv;
 var command = nodeArgs[2];
+var divider = "\n\n───────────────────────────────────────────";
 
 var client = new Twitter(keys.twitterKeys);
 var spotify = new Spotify(keys.spotifyKeys);
@@ -17,7 +18,7 @@ var spotify = new Spotify(keys.spotifyKeys);
 var searchTerms = process.argv.slice(3).join(" ");
 
 
-// console.log(client);
+console.log(client);
 console.log(spotify);
 
 function displayTweets() {
@@ -53,7 +54,9 @@ function spotifySong() {
     spotify.search({type: "track", query: searchTerms, limit: "10"}, function(error,data){
     
     console.log(data);
+
     var response = data.tracks.items;
+
     var artist = response.artists.name;
     var songName = response.name;
     var link = response.album.href;
@@ -63,15 +66,17 @@ function spotifySong() {
 
         if (!error){
 
-            console.log("───────────────────────────────────────────\n");
-            console.log("\nArtist: " + artist);
-            console.log("───────────────────────────────────────────\n");
-            console.log("\nTitle: " + songName);
-            console.log("───────────────────────────────────────────\n");
-            console.log("\nUse this link to listen: " + link);
-            console.log("───────────────────────────────────────────\n");
-            console.log("\nAlbum Name: " + album);
-            console.log("───────────────────────────────────────────\n");
+            var songData = [
+                "Artist: " + artist,
+                "Song: " + songName,
+                "Album " + album,
+                "Link: " + link,
+            ].join("\n\n");
+
+            fs.appendFile("random.txt", songData, function(error){
+                if (error) throw error;
+                console.log(songData);
+            })
 
         }
         
@@ -81,39 +86,41 @@ function spotifySong() {
 
 function movieInfo(){
     
-    var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=7bc4c9f6";
+    var queryUrl = "http://www.omdbapi.com/?t=" + searchTerms + "&y=&plot=short&apikey=7bc4c9f6";
 
     console.log(queryUrl);
 
     request(queryUrl, function(error, response, body) {
+        
         if(!error && response.statusCode === 200){
 
-            var title = JSON.parse(body).Title;
-            var year = JSON.parse(body).Year;
-            var ratingIMDB = JSON.parse(body).imdbRating;
-            var ratingRotten = JSON.parse(body).tomatoMeter;
-            var country = JSON.parse(body).Country;
-            var lang = JSON.parse(body).Language;
-            var plot = JSON.parse(body).Plot;
-            var cast = JSON.parse(body).Actors;
+            var jsonData = JSON.parse(body);
 
-            console.log("───────────────────────────────────────────\n");
-            console.log("Title: " + title + "\n");
-            console.log("───────────────────────────────────────────\n");
-            console.log("Year: " + year + "\n");
-            console.log("───────────────────────────────────────────\n");
-            console.log("IMDB Rating: " + ratingIMDB + "\n");
-            console.log("───────────────────────────────────────────\n");
-            console.log("Tomato Meter: " + ratingRotten + "\n");
-            console.log("───────────────────────────────────────────\n");
-            console.log("Country: " + country + "\n");
-            console.log("───────────────────────────────────────────\n");
-            console.log("Language: " + lang + "\n");
-            console.log("───────────────────────────────────────────\n");
-            console.log("Plot: " + plot + "\n");
-            console.log("───────────────────────────────────────────\n");
-            console.log("Cast: " + cast + "\n");
-            console.log("───────────────────────────────────────────\n");
+            var title = jsonData.Title;
+            var year = jsonData.Year;
+            var ratingIMDB = jsonData.imdbRating;
+            var ratingRotten = jsonData.tomatoMeter;
+            var country = jsonData.Country;
+            var lang = jsonData.Language;
+            var plot = jsonData.Plot;
+            var cast = jsonData.Actors;
+
+            var movieData = [
+                "\nTitle: " + title,
+                "Year: " + year,
+                "IMDB Rating: " + ratingIMDB,
+                "Tomato Meter: " + ratingRotten,
+                "Country: " + country,
+                "Language: " + lang,
+                "Plot: " + plot,
+                "Cast: " + cast,
+            ].join("\n\n");
+
+            fs.appendFile("random.txt", divider + movieData, function(error){
+                if (error) throw error;
+            })
+
+            console.log(divider + movieData);
             
         }
     })
