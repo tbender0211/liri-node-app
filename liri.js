@@ -42,7 +42,7 @@ function displayTweets() {
 
       console.log(output);
 
-      fs.appendFile("random.txt", output, function(err){
+      fs.appendFile("log.txt", output, function(err){
           if(err) throw err;
       })
 
@@ -71,7 +71,7 @@ function spotifySong() {
                 "Link: " + link,
             ].join("\n\n");
 
-            fs.appendFile("random.txt", songData, function(error){
+            fs.appendFile("log.txt", songData, function(error){
                 
                 if (error){
 
@@ -124,7 +124,7 @@ function movieInfo(){
                 "Cast: " + cast,
             ].join("\n\n");
 
-            fs.appendFile("random.txt", divider + movieData, function(error){
+            fs.appendFile("log.txt", divider + movieData, function(error){
                 if (error) throw error;
             })
 
