@@ -8,6 +8,23 @@ var fs = require("fs");
 
 var movieKey = "http://www.omdbapi.com/?i=tt3896198&apikey=7bc4c9f6";
 
+
+if (command === "do-what-it-says"){
+
+    fs.readFile("random.txt", "utf8", function(error,data){
+
+        if (error) {
+
+            return console.log(error);
+
+        }
+
+        var nodeArgs = data.split(",").join(" ");
+        return nodeArgs;
+        spotifySong();
+
+    })
+}
 var nodeArgs = process.argv;
 var command = nodeArgs[2];
 var divider = "\n\n───────────────────────────────────────────";
@@ -49,20 +66,24 @@ function displayTweets() {
     });
 }
 
-function spotifySong() {
+function spotifySong(searchTerms) {
 
     spotify.search({type: "track", query: searchTerms, limit: "10"}, function(error,data){
     
-    console.log(data);
+        if ( error ) {
+            console.log('Error occurred: ' + error);
+            return;
+        }
+        //console.log(data);
 
-    var songResponse = data.tracks.items;
+        for (var i = 0; i < 3; i++) {
 
-    var artist = songResponse.artists.name;
-    var songName = songResponse.name;
-    var link = songResponse.album.href;
-    var album = songResponse.album.name;
+            var songResponse = data.tracks.items[i];
 
-        if (!error){
+            var artist = songResponse.artists[0].name;
+            var songName = songResponse.name;
+            var link = songResponse.album.href;
+            var album = songResponse.album.name;
 
             var songData = [
                 "Artist: " + artist,
@@ -70,8 +91,11 @@ function spotifySong() {
                 "Album " + album,
                 "Link: " + link,
             ].join("\n\n");
+        }
 
-            fs.appendFile("log.txt", songData, function(error){
+          console.log(divider + songData);
+
+            fs.appendFile("log.txt", divider + songData, function(error){
                 
                 if (error){
 
@@ -79,11 +103,9 @@ function spotifySong() {
 
                 };
 
-                console.log(songData);
-
             })
 
-        }
+        
           if (error){
 
             console.log(error);
@@ -96,7 +118,7 @@ function movieInfo(){
     
     var queryUrl = "http://www.omdbapi.com/?t=" + searchTerms + "&y=&plot=short&apikey=7bc4c9f6";
 
-    console.log(queryUrl);
+    // console.log(queryUrl);
 
     request(queryUrl, function(error, response, body) {
         
@@ -132,6 +154,23 @@ function movieInfo(){
             
         }
     })
+}
+
+function backstreetsBack(){
+
+    fs.readFile('random.txt', "utf8", function(error, data){
+
+      var random = data.split(',');
+  
+      spotifySong(random[1]);
+
+    });
+
+}
+
+if (command === "do-what-it-says"){
+
+   backstreetsBack();
 }
 
 if(command === "spotify-this-song"){
