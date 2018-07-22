@@ -8,23 +8,6 @@ var fs = require("fs");
 
 var movieKey = "http://www.omdbapi.com/?i=tt3896198&apikey=7bc4c9f6";
 
-
-if (command === "do-what-it-says"){
-
-    fs.readFile("random.txt", "utf8", function(error,data){
-
-        if (error) {
-
-            return console.log(error);
-
-        }
-
-        var nodeArgs = data.split(",").join(" ");
-        return nodeArgs;
-        spotifySong();
-
-    })
-}
 var nodeArgs = process.argv;
 var command = nodeArgs[2];
 var divider = "\n\n───────────────────────────────────────────";
@@ -35,8 +18,8 @@ var spotify = new Spotify(keys.spotifyKeys);
 var searchTerms = process.argv.slice(3).join(" ");
 
 
-console.log(client);
-console.log(spotify);
+// console.log(client);
+// console.log(spotify);
 
 function displayTweets() {
 
@@ -49,7 +32,7 @@ function displayTweets() {
 
       for (var i = 0; i < tweets.length; i++) {
 
-        output += ("───────────────────────────────────────────\n");
+        output += ("\n───────────────────────────────────────────\n");
         output += ("@TaraBender: " + tweets[i].text) + "\n";
         output += (tweets[i].created_at) + "\n";
 
@@ -59,7 +42,7 @@ function displayTweets() {
 
       console.log(output);
 
-      fs.appendFile("log.txt", output, function(err){
+      fs.appendFile("log.txt", divider + "\n\nmy-tweets:" + output, function(err){
           if(err) throw err;
       })
 
@@ -67,6 +50,12 @@ function displayTweets() {
 }
 
 function spotifySong(searchTerms) {
+
+    if (searchTerms == null){
+
+        searchTerms = "The Sign";
+
+    }
 
     spotify.search({type: "track", query: searchTerms, limit: "10"}, function(error,data){
     
@@ -86,7 +75,7 @@ function spotifySong(searchTerms) {
             var album = songResponse.album.name;
 
             var songData = [
-                "Artist: " + artist,
+                "\n\nArtist: " + artist,
                 "Song: " + songName,
                 "Album " + album,
                 "Link: " + link,
@@ -95,7 +84,7 @@ function spotifySong(searchTerms) {
 
           console.log(divider + songData);
 
-            fs.appendFile("log.txt", divider + songData, function(error){
+            fs.appendFile("log.txt", divider + "\n\nspotify-this-song:" + songData, function(error){
                 
                 if (error){
 
@@ -115,6 +104,12 @@ function spotifySong(searchTerms) {
 }
 
 function movieInfo(){
+
+    if(searchTerms == null){
+
+        var searchTerms = "Mr. Nobody";
+
+    }
     
     var queryUrl = "http://www.omdbapi.com/?t=" + searchTerms + "&y=&plot=short&apikey=7bc4c9f6";
 
@@ -146,7 +141,7 @@ function movieInfo(){
                 "Cast: " + cast,
             ].join("\n\n");
 
-            fs.appendFile("log.txt", divider + movieData, function(error){
+            fs.appendFile("log.txt", divider + "\n\nmovie-this:" + movieData, function(error){
                 if (error) throw error;
             })
 
@@ -168,12 +163,14 @@ function backstreetsBack(){
 
 }
 
+
 if (command === "do-what-it-says"){
 
    backstreetsBack();
 }
 
 if(command === "spotify-this-song"){
+
     spotifySong();
 };
 
@@ -182,5 +179,7 @@ if (command === "my-tweets"){
 }
 
 if (command === "movie-this"){
+
     movieInfo();
+
 }
